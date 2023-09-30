@@ -24,7 +24,18 @@
       }
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/favicon.png",
+      "config": {
+        "firebase": {
+          "apiKey": "AIzaSyBNm8K5zq95_pWMO1fT6fsumO9GRGcxzig",
+          "authDomain": "todoapp-4c01e.firebaseapp.com",
+          "projectId": "todoapp-4c01e",
+          "storageBucket": "todoapp-4c01e.appspot.com",
+          "messagingSenderId": "74409345330",
+          "appId": "1:74409345330:web:14bf55b5ace50079bc972b",
+          "measurementId": "G-9E765V3QNW"
+        }
+      }
     }
   }
 }

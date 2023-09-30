@@ -2,13 +2,19 @@ import { StatusBar } from 'expo-status-bar';
 import React, { useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { View, Text, Button, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
-import firebase, { authenthication, db } from './firebase';
+import firebase, { authenthication, db, analytics} from './firebase';
 import { collection, addDoc, getDoc, getDocs, setDoc, doc, query, deleteDoc } from 'firebase/firestore';
 import styles from './styles';
 import JobMaker from './components/jobMaker';
 import JobItem from './components/JobItem';
 import UserControl from './components/UserControl';
 import { v4 as uuidv4 } from 'uuid';
+// import * as Analytics from 'expo-firebase-analytics';
+import { logEvent } from 'expo-firebase-analytics';
+// import * as Analytics from 'expo-firebase-analytics';
+// import { getAnalytics, logEvent } from "firebase/analytics";
+
+// const analytics = getAnalytics();
 
 function App() {
   const [user, setUser] = useState(null);
@@ -16,21 +22,22 @@ function App() {
   const [isLoginVisible, setIsLoginVisible] = useState(false);
 
   const addJob = async (job) => {
-    const jobId = uuidv4();
-    job.id = jobId;
-    const desc = job.description;
     try {
       if (user) {
         try {
-          const currentDate = new Date();
           const docRef = await addDoc(collection(db, user.uid), job);
-          // console.log("Document written with ID: ", docRef.id);
           job.id = docRef.id;
-          setJobs([...jobs, job]);
+          console.log("Document written with ID: ", docRef.id);
+          const updatedJobs = [...jobs, job]; // Update the local state with the new job object
+          setJobs(updatedJobs);   
+          await logEvent('addJob', {userUid: user.uid, jobDetail: job});
         } catch (e) {
           console.error("Error adding document: ", e);
         }
+        
       } else {
+        const jobId = uuidv4();
+        job.id = jobId;
         setJobs([...jobs, job]);
         updateLocal([...jobs, job]);
       }
@@ -40,21 +47,23 @@ function App() {
   };
 
   const deleteJob = async (id) => {
-    console.log("Delete");
     try {
       if (user) {
         try {
           const docRef = doc(db, user.uid, id);
           await deleteDoc(docRef);
+          await logEvent('deleteJob', {userUid: user.uid, jobId: id});
         } catch (e) {
           console.error("Error deleting document: ", e);
         }
         const updatedJobs = jobs.filter((job) => job.id !== id);
         setJobs(updatedJobs);
+        console.log("Delete");
       } else {
         const updatedJobs = jobs.filter((job) => job.id !== id);
         setJobs(updatedJobs);
         updateLocal(updatedJobs);
+        console.log("Delete");
       }
     } catch (error) {
       console.error('Error deleting job:', error);
@@ -73,6 +82,7 @@ function App() {
             done: true,
           };
           await setDoc(docRef, updatedData);
+          await logEvent('doneJob', {userUid: user.uid, jobId: id});
         } catch (e) {
           console.error("Error changing document: ", e);
         }
@@ -111,6 +121,7 @@ function App() {
   };
 
   useEffect(() => {
+    // logEvent('SeeTheMainPAge', {userUid: "no"});
     const unsubscribe = authenthication.onAuthStateChanged(async (authUser) => {
       const currentUser = authenthication.currentUser;
       if (currentUser) {
