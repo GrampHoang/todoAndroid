@@ -10,7 +10,7 @@ function JobMaker({ onAddJob }) {
 
   const handleAddJob = () => {
     if (description.trim() === '') {
-      return; // Prevent adding empty jobs
+      return; 
     }
 
     const currentDate = new Date();
@@ -22,8 +22,6 @@ function JobMaker({ onAddJob }) {
     };
 
     onAddJob(job);
-
-    // Clear the description input
     setDescription('');
   };
 
@@ -54,6 +52,7 @@ const styles = StyleSheet.create({
   },
 
   input: {
+    paddingLeft: 6,
     flex: 1,
     height: 30,
     marginRight: 10,

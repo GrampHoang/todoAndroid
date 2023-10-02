@@ -3,6 +3,7 @@ import firebase from '../firebase';
 import { signInWithEmailAndPassword, onAuthStateChanged, createUserWithEmailAndPassword, getAuth  } from "firebase/auth";
 import { View, Text, Button, ScrollView, TouchableOpacity, StyleSheet, TextInput } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { logEvent } from 'expo-firebase-analytics';
 
 const auth = getAuth()
 
@@ -45,8 +46,10 @@ const UserControl = ({ onClose }) => {
           if (userCredential) {
             console.log('Loggin in as:',userCredential.email)
             console.log(userCredential)
+            logEvent('userLogin', {userUid: userCredential.uid, userEmail: userCredential.email});
           }
        });
+       
        onClose();
       } else {
         setLoginError("Please fill out the fields");
@@ -65,8 +68,10 @@ const UserControl = ({ onClose }) => {
     try{
       if (email !== '' && password !== '') {
         await createUserWithEmailAndPassword(auth, email, password).then(() => {
+        logEvent('userSignup', {userEmail: email});
         handleLogin();
         console.log('User account created & signed in!');
+        onClose();
           // postData(username) Sync user data here, or pop up and ask if you want to sycn or not
         })
       }
@@ -80,9 +85,6 @@ const UserControl = ({ onClose }) => {
         }
         else if (error.code === 'auth/weak-password') {
           setLoginError('Password too weak!');
-        }
-        else {
-          setLoginError("Unkown Error");
         }
         console.error(error);
         

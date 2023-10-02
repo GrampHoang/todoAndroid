@@ -27,10 +27,10 @@ function App() {
         try {
           const docRef = await addDoc(collection(db, user.uid), job);
           job.id = docRef.id;
-          console.log("Document written with ID: ", docRef.id);
+          // console.log("Document written with ID: ", docRef.id);
           const updatedJobs = [...jobs, job]; // Update the local state with the new job object
           setJobs(updatedJobs);   
-          await logEvent('addJob', {userUid: user.uid, jobDetail: job});
+          logEvent('addJob', {user_id: user.uid, jobDesc: job.description});
         } catch (e) {
           console.error("Error adding document: ", e);
         }
@@ -52,18 +52,18 @@ function App() {
         try {
           const docRef = doc(db, user.uid, id);
           await deleteDoc(docRef);
-          await logEvent('deleteJob', {userUid: user.uid, jobId: id});
+          logEvent('deleteJob', {user_id: user.uid, jobId: id});
         } catch (e) {
           console.error("Error deleting document: ", e);
         }
         const updatedJobs = jobs.filter((job) => job.id !== id);
         setJobs(updatedJobs);
-        console.log("Delete");
+        // console.log("Delete");
       } else {
         const updatedJobs = jobs.filter((job) => job.id !== id);
         setJobs(updatedJobs);
         updateLocal(updatedJobs);
-        console.log("Delete");
+        // console.log("Delete");
       }
     } catch (error) {
       console.error('Error deleting job:', error);
@@ -71,7 +71,7 @@ function App() {
   };
 
   const doneJob = async(id) => {
-    console.log("Done");
+    // console.log("Done");
     try {
       if (user) {
         try {
@@ -82,7 +82,7 @@ function App() {
             done: true,
           };
           await setDoc(docRef, updatedData);
-          await logEvent('doneJob', {userUid: user.uid, jobId: id});
+          logEvent('doneJob', {user_id: user.uid, jobId: id});
         } catch (e) {
           console.error("Error changing document: ", e);
         }
@@ -104,6 +104,7 @@ function App() {
 
   const handleSignOut = async () => {
     try {
+      logEvent('userSignout', {userEmail: user.email});
       await authenthication.signOut();
       setUser(null);
       window.location.reload();

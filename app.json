@@ -21,7 +21,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.gramphoang.todoAn"
     },
     "web": {
       "favicon": "./assets/favicon.png",
@@ -35,6 +36,11 @@
           "appId": "1:74409345330:web:14bf55b5ace50079bc972b",
           "measurementId": "G-9E765V3QNW"
         }
+      }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "27e0cd91-1e44-4ad6-85bd-94237667616b"
       }
     }
   }
