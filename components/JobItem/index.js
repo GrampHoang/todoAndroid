@@ -2,13 +2,36 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity  } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
+function truncateText(text) {
+  if (text.length <= 20) {
+    return text;
+  } else {
+    return text.slice(0, 20) + '...';
+  }
+}
+
+function formatTimeDifference(date, time) {
+  const now = new Date();
+  const jobDateTime = new Date(`${date} ${time}`);
+  const timeDifference = now - jobDateTime;
+
+  if (timeDifference < 86400000) { // <Less than> 24 hours
+    const hours = Math.floor(timeDifference / 3600000); // Convert to hours
+    return `${hours}h ago`;
+  } else {
+    const days = Math.floor(timeDifference / 86400000); // Convert to days
+    return `${days}d ago`;
+  }
+}
+
 function JobItem({ job, doDeleteJob, doDoneJob }) {
+  const timeAgo = formatTimeDifference(job.date, job.time);
   return (
-    <View style={job.done ? styles.jobItemDone : styles.jobItem}>
+    <View style={job.done ? styles.jobItemDone : styles.jobItem} numberOfLines={1} ellipsizeMode="tail">
       <Text style={job.done ? styles.jobDescriptionDone : styles.jobDescription}>
-        {job.description}
+        {truncateText(job.description)}
       </Text>
-      <Text style={styles.jobDateTime}>{job.date} {job.time}</Text>
+      <Text style={styles.jobDateTime}>{timeAgo}</Text>
 
       <TouchableOpacity onPress={job.done ? doDeleteJob : doDoneJob}>
       {job.done ? (
@@ -40,14 +63,6 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
   },
 
-  bottom: {
-    width: '100%',
-    height: 64,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-
   jobItem: {
     width: "95%",
     flexDirection: 'row',
@@ -58,7 +73,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#ccc',
     marginVertical: 5,
-    height: 45,
+    height: 65,
   },
 
   jobItemDone: {
@@ -72,28 +87,22 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#ccc',
     marginVertical: 5,
-    height: 45,
+    height: 65,
   },
 
   jobDescription: {
     flex: 1,
-    fontSize: 18,
+    fontSize: 16,
   },
 
   jobDescriptionDone: {
     flex: 1,
-    fontSize: 22,
+    fontSize: 16,
     textDecorationLine: 'line-through',
   },
 
   jobDateTime: {
     marginLeft: 10,
     marginRight: 10,
-  },
-
-  jobButtons: {
-    padding: 15,
-    flexDirection: 'row', // Flex direction for row layout
-    alignItems: 'flex-end',
   },
 });

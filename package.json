@@ -1,5 +1,5 @@
 {
-  "name": "todoan",
+  "name": "Simple Todo",
   "version": "1.0.0",
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
@@ -11,21 +11,21 @@
   "dependencies": {
     "@babel/preset-env": "^7.22.20",
     "@expo/webpack-config": "^19.0.0",
-    "@react-native-async-storage/async-storage": "1.18.2",
+    "@react-native-async-storage/async-storage": "1.17.11",
     "@react-native-firebase/app": "^18.5.0",
-    "expo": "~49.0.12",
+    "expo": "^48.0.0",
     "expo-firebase-analytics": "^8.0.0",
-    "expo-status-bar": "~1.6.0",
+    "expo-status-bar": "~1.4.4",
     "firebase": "^10.4.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-native": "0.72.5",
-    "react-native-web": "~0.19.6",
+    "react-native": "0.71.3",
+    "react-native-web": "~0.18.11",
     "uuid": "^9.0.1",
-    "expo-dev-client": "~2.4.11"
+    "expo-dev-client": "~2.2.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.23.0"
+    "@babel/core": "^7.20.0"
   },
   "private": true
 }

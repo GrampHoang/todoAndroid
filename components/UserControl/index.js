@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import firebase from '../firebase';
+import firebase from '../../firebase';
 import { signInWithEmailAndPassword, onAuthStateChanged, createUserWithEmailAndPassword, getAuth  } from "firebase/auth";
 import { View, Text, Button, ScrollView, TouchableOpacity, StyleSheet, TextInput } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';

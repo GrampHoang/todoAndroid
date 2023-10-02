@@ -5,7 +5,7 @@ import { View, Text, Button, ScrollView, TouchableOpacity, StyleSheet } from 're
 import firebase, { authenthication, db, analytics} from './firebase';
 import { collection, addDoc, getDoc, getDocs, setDoc, doc, query, deleteDoc } from 'firebase/firestore';
 import styles from './styles';
-import JobMaker from './components/jobMaker';
+import JobMaker from './components/JobMaker';
 import JobItem from './components/JobItem';
 import UserControl from './components/UserControl';
 import { v4 as uuidv4 } from 'uuid';
