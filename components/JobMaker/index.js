@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, TextInput, Button, StyleSheet } from 'react-native';
+import { Text, View, TextInput, StyleSheet, Pressable, Keyboard } from 'react-native';
+import 'react-native-get-random-values';
 
 function JobMaker({ onAddJob }) {
   const [description, setDescription] = useState('');
@@ -19,8 +20,9 @@ function JobMaker({ onAddJob }) {
       done: false,
       date: currentDate.toLocaleDateString(),
       time: currentDate.toLocaleTimeString(),
+      id: Date.now().toString(),
     };
-
+    Keyboard.dismiss();
     onAddJob(job);
     setDescription('');
   };
@@ -33,7 +35,9 @@ function JobMaker({ onAddJob }) {
         onChangeText={handleDescriptionChange}
         style={styles.input}
       />
-      <Button title="Add Job" onPress={handleAddJob} />
+      <Pressable style={styles.button} onPress={handleAddJob}>
+        <Text style={styles.text}>Add Job</Text>
+      </Pressable>
     </View>
   );
 }
@@ -44,7 +48,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     alignSelf: "center",
-    height: 55,
+    height: 60,
     width: "95%",
     padding: 10,
     borderWidth: 1,
@@ -56,6 +60,25 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 30,
     marginRight: 10,
+  },
+
+  button: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 1,
+    paddingHorizontal: 8,
+    borderRadius: 2,
+    elevation: 3,
+    backgroundColor: '#2196F3',
+    height: 32,
+  },
+
+  text: {
+    fontSize: 16,
+    lineHeight: 21,
+    fontWeight: 'bold',
+    letterSpacing: 0.25,
+    color: 'white',
   },
 });
 

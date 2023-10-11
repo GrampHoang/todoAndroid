@@ -17,9 +17,25 @@ const styles = StyleSheet.create({
     height: 75,
     width: '100%',
     padding: 20,
-  }
+  },
 
-
+  button: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 1,
+    paddingHorizontal: 8,
+    height: 32,
+    borderRadius: 2,
+    elevation: 3,
+    backgroundColor: '#2196F3',
+  },
+  text: {
+    fontSize: 16,
+    lineHeight: 21,
+    fontWeight: 'bold',
+    letterSpacing: 0.25,
+    color: 'white',
+  },
 });
 
 export default styles;

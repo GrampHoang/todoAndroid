@@ -1,9 +1,11 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity  } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import moment from 'moment';
+import { isValid } from 'ipaddr.js';
 
 function truncateText(text) {
-  if (text.length <= 20) {
+  if (text.length <= 26) {
     return text;
   } else {
     return text.slice(0, 20) + '...';
@@ -11,17 +13,31 @@ function truncateText(text) {
 }
 
 function formatTimeDifference(date, time) {
-  const now = new Date();
-  const jobDateTime = new Date(`${date} ${time}`);
-  const timeDifference = now - jobDateTime;
+  
+  const jobDateTimeString = `${date} ${time}`;
 
-  if (timeDifference < 86400000) { // <Less than> 24 hours
-    const hours = Math.floor(timeDifference / 3600000); // Convert to hours
-    return `${hours}h ago`;
-  } else {
-    const days = Math.floor(timeDifference / 86400000); // Convert to days
-    return `${days}d ago`;
-  }
+  // Ensure that the input format matches your data format
+  const jobDateTime = moment(jobDateTimeString, 'MM/DD/YYYY h:mm:ss A'); 
+  var dateTimeAgo = jobDateTime.fromNow();
+  if (jobDateTime.isValid){
+    return dateTimeAgo;
+  } else{ 
+    const dateComponents = date.split('/');
+    const day = dateComponents[1];
+    const month = dateComponents[0];
+    return `${day}/${month}`;
+}
+  // const now = new Date();
+  // // const jobDateTime = new Date(`${date} ${time}`);
+  // const timeDifference = now - jobDateTime;
+
+  // if (timeDifference < 86400000) { // <Less than> 24 hours
+  //   const hours = Math.floor(timeDifference / 3600000); // Convert to hours
+  //   return `${hours}h ago`;
+  // } else {
+  //   const days = Math.floor(timeDifference / 86400000); // Convert to days
+  //   return `${days}d ago`;
+  // }
 }
 
 function JobItem({ job, doDeleteJob, doDoneJob }) {

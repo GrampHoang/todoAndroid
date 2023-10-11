@@ -1,18 +1,20 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { View, Text, Button, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, Pressable, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import firebase, { authenthication, db, analytics} from './firebase';
 import { collection, addDoc, getDoc, getDocs, setDoc, doc, query, deleteDoc } from 'firebase/firestore';
 import styles from './styles';
 import JobMaker from './components/JobMaker';
 import JobItem from './components/JobItem';
 import UserControl from './components/UserControl';
+import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
 // import * as Analytics from 'expo-firebase-analytics';
 import { logEvent } from 'expo-firebase-analytics';
 // import * as Analytics from 'expo-firebase-analytics';
 // import { getAnalytics, logEvent } from "firebase/analytics";
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 // const analytics = getAnalytics();
 
@@ -22,23 +24,23 @@ function App() {
   const [isLoginVisible, setIsLoginVisible] = useState(false);
 
   const addJob = async (job) => {
+    console.log(job.id)
     try {
       if (user) {
         try {
-          const docRef = await addDoc(collection(db, user.uid), job);
-          job.id = docRef.id;
-          // console.log("Document written with ID: ", docRef.id);
-          const updatedJobs = [...jobs, job]; // Update the local state with the new job object
-          setJobs(updatedJobs);   
+          setDoc(doc(db, user.uid, job.id), job);
+          const updatedJobs = [...jobs, job]; 
+          console.log(job);
+          setJobs(updatedJobs);  
           logEvent('addJob', {user_id: user.uid, jobDesc: job.description});
         } catch (e) {
           console.error("Error adding document: ", e);
         }
         
       } else {
-        const jobId = uuidv4();
-        job.id = jobId;
-        setJobs([...jobs, job]);
+        // const jobId = Date.now();
+        // job.id = jobId;
+        setJobs((prevJobs) => [...prevJobs, job]);
         updateLocal([...jobs, job]);
       }
     } catch (error) {
@@ -47,6 +49,7 @@ function App() {
   };
 
   const deleteJob = async (id) => {
+    console.log(id)
     try {
       if (user) {
         try {
@@ -58,12 +61,10 @@ function App() {
         }
         const updatedJobs = jobs.filter((job) => job.id !== id);
         setJobs(updatedJobs);
-        // console.log("Delete");
       } else {
         const updatedJobs = jobs.filter((job) => job.id !== id);
         setJobs(updatedJobs);
         updateLocal(updatedJobs);
-        // console.log("Delete");
       }
     } catch (error) {
       console.error('Error deleting job:', error);
@@ -71,7 +72,7 @@ function App() {
   };
 
   const doneJob = async(id) => {
-    // console.log("Done");
+    console.log(id)
     try {
       if (user) {
         try {
@@ -130,7 +131,6 @@ function App() {
       } else {
         setUser(null);
       }
-      console.log(currentUser);
       await fetchJobs(currentUser);
     }, (error) => {
       console.error('Firebase Authentication Error:', error);
@@ -140,13 +140,12 @@ function App() {
   }, []);
 
   const updateLocal = async (updatedJobs) => {
-    console.log(updatedJobs)
     try {
       await AsyncStorage.setItem('localJobsData', JSON.stringify(updatedJobs));
     } catch (error) {
       console.error('Error saving jobs data to AsyncStorage:', error);
     }
-  }
+  };
 
   const fetchJobs = async (user) => {
     try {
@@ -154,7 +153,6 @@ function App() {
         try {
           // const docRef = collection(db, user.uid);
           // const docSnap = docRef.data;
-          // console.log(docRef);
           const docQue = query(collection(db, user.uid));
           const queSnap = await getDocs(docQue);
           const jobDataArray = [];
@@ -191,10 +189,17 @@ function App() {
       )}
       <View style={styles.topbar}>
         <Text style={{ textAlign: 'left', fontSize: 20 }}>Hello {user ? user.email.split('@')[0] : 'Guest'}</Text>
+        <TouchableOpacity onPress={() => fetchJobs(user)}>
+            <Ionicons name="refresh-outline" size={32}></Ionicons>
+          </TouchableOpacity>
         {user ? (
-          <Button title="Sign Out" onPress={handleSignOut} />
+          <Pressable style={styles.button} onPress={handleSignOut}>
+            <Text style={styles.text}>Sign Out</Text>
+          </Pressable>
           ) : (
-          <Button title="Sign in" onPress={openLoginWindow} />
+          <Pressable style={styles.button} onPress={openLoginWindow}>
+            <Text style={styles.text}>Sign in</Text>
+          </Pressable>
         )}
       </View>
       <View style={{ flex: 3 }}>
